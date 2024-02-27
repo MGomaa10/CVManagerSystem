@@ -55,7 +55,6 @@ namespace CVManagerSystem.API.Controllers
             return respons;
         }
 
-
         [HttpGet("GetCVsFilteredByCity")]
         public async Task<List<CV>> GetCVsFilteredByCity([FromQuery]string city)
         {
