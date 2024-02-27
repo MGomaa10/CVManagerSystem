@@ -12,9 +12,10 @@ namespace CVManagerSystem.Services.Interfaces
     public interface ICVServices
     {
         Task<List<CV>> GetCVsListAsync();
+        Task<List<CV>> GetCVsFilterByCityAsync(string cityName);
         Task<CV> GetCVByIdAsync(int Id);
-        Task<IResponseDto> AddAsync(CVDto cv);
-        Task<IResponseDto> EditAsync(CVDto cv, int Id);
-        Task<IResponseDto> DelelteCV(int Id);
+        Task<IResponseDto> AddCVAsync(CVDto cv);
+        Task<IResponseDto> EditCVAsync(CVDto cv, int Id);
+        Task<IResponseDto> DelelteCVAsync(int Id);
     }
 }

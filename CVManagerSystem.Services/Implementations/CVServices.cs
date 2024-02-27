@@ -31,7 +31,7 @@ namespace CVManagerSystem.Services.Implementations
             _response = response;
             _logger = logger;
         }
-        public async Task<IResponseDto> AddAsync(CVDto options)
+        public async Task<IResponseDto> AddCVAsync(CVDto options)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -107,7 +107,7 @@ namespace CVManagerSystem.Services.Implementations
             return allCvs;
         }
 
-        public async Task<IResponseDto> EditAsync(CVDto options, int Id)
+        public async Task<IResponseDto> EditCVAsync(CVDto options, int Id)
         {
             try
             {
@@ -193,7 +193,7 @@ namespace CVManagerSystem.Services.Implementations
             return false;
         }
 
-        public async Task<IResponseDto> DelelteCV(int Id)
+        public async Task<IResponseDto> DelelteCVAsync(int Id)
         {
             var cv = await _context.CV.FirstOrDefaultAsync(c => c.ID == Id);
             try
@@ -214,6 +214,23 @@ namespace CVManagerSystem.Services.Implementations
             }
 
             return _response;
+        }
+
+        public async Task<List<CV>> GetCVsFilterByCityAsync(string cityName)
+        {
+            try
+            {
+                var cvs = await _context.CV
+                    .Where(cv => cv.PersonalInformation.CityName == cityName)
+                    .ToListAsync();
+
+                return cvs;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving CVs by city.");
+                throw;
+            }
         }
     }
 }

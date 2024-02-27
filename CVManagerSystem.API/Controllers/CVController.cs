@@ -23,7 +23,7 @@ namespace CVManagerSystem.API.Controllers
         [HttpPost]
         public async Task<IResponseDto> CreateCV([FromForm] CVDto options)
         {
-            var respons = await _cvServices.AddAsync(options);
+            var respons = await _cvServices.AddCVAsync(options);
             return respons;
         }
 
@@ -44,14 +44,22 @@ namespace CVManagerSystem.API.Controllers
         [HttpPut("{Id}")]
         public async Task<IResponseDto> EditCV([FromForm] CVDto options, int Id)
         {
-            var respons = await _cvServices.EditAsync(options, Id);
+            var respons = await _cvServices.EditCVAsync(options, Id);
             return respons;
         }
 
         [HttpDelete("{Id}")]
         public async Task<IResponseDto> DeleteCV(int Id)
         {
-            var respons = await _cvServices.DelelteCV(Id);
+            var respons = await _cvServices.DelelteCVAsync(Id);
+            return respons;
+        }
+
+
+        [HttpGet("GetCVsFilteredByCity")]
+        public async Task<List<CV>> GetCVsFilteredByCity([FromQuery]string city)
+        {
+            var respons = await _cvServices.GetCVsFilterByCityAsync(city);
             return respons;
         }
     }
