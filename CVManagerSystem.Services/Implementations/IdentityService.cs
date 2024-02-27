@@ -3,7 +3,9 @@ using CVManagerSystem.Core.Base;
 using CVManagerSystem.Core.Dtos;
 using CVManagerSystem.Data;
 using CVManagerSystem.Data.DataContext.DbIdentity;
+using CVManagerSystem.Services.Extentions;
 using CVManagerSystem.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,18 +35,32 @@ namespace CVManagerSystem.Services.Implementations
         }
         public async Task<IActionResult> Login(LoginDto login)
         {
+            var result = Microsoft.AspNetCore.Identity.SignInResult.Failed;
+            var token = "";
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == login.Email);
-            if (user == null) return new BadRequestObjectResult(new { StatusCode = 404, Value = "not Found" });
-            var result = await _signInManager.PasswordSignInAsync(user, login.Password, false, true);
+
+            var checkUser = JsonWebTokenGeneration.Authenticate(_context, login);
+            if (checkUser is not null)
+            {
+                result = await _signInManager.PasswordSignInAsync(user, login.Password, false, true);
+            }
 
             if (!result.Succeeded) { 
             return new BadRequestObjectResult(new { StatusCode = 404, Value = "not Found" });
             }
             else
             {
-
+                 token = JsonWebTokenGeneration.GenerateToken(_configuration, user);
             }
-            throw new NotImplementedException();
+
+            var UserReturn = user.Adapt<ReadUser>();
+            var User = new
+            {
+                Token = token,
+                User = UserReturn
+            };
+
+            return new OkObjectResult(User);
         }
 
         public async Task<IResponseDto> Register(RegisterDto request)
@@ -63,6 +79,8 @@ namespace CVManagerSystem.Services.Implementations
                 UserName = request.Email,
                 Email = request.Email,
                 LockoutEnabled = false,
+                Address = request.Address,
+                Country = request.Country
             };
             var result = await _userManager.CreateAsync(applicationUser, request.Password);
 

@@ -11,12 +11,10 @@ namespace CVManagerSystem.Core.Dtos
     {
         [Required]
         public string Name { get; set; } = null!;
-
         [Required, MaxLength(20, ErrorMessage = "maximum {20} characters allowed")]
         public string CompanyName { get; set; } = null!;
         public string CompanyCityName { get; set; } = null!;
         public string CompanyField { get; set; } = null!;
-
         [Required]
         public string FullName { get; set; } = null!;
         public string CityName { get; set; } = null!;

@@ -97,13 +97,13 @@ namespace CVManagerSystem.Services.Implementations
 
         public async Task<CV> GetCVByIdAsync(int Id)
         {
-            var getOneCv = await _context.CV.AsNoTracking().FirstOrDefaultAsync(c => c.ID == Id);
+            var getOneCv = await _context.CV.Include(c => c.PersonalInformation).Include(e => e.ExperienceInformation).AsNoTracking().FirstOrDefaultAsync(c => c.ID == Id);
             return getOneCv;
         }
 
         public async Task<List<CV>> GetCVsListAsync()
         {
-            var allCvs = await _context.CV.AsNoTracking().ToListAsync();
+            var allCvs = await _context.CV.Include(c => c.PersonalInformation).Include(e => e.ExperienceInformation).AsNoTracking().ToListAsync();
             return allCvs;
         }
 

@@ -21,6 +21,13 @@ namespace CVManagerSystem.API.Controllers.Account
         }
 
         [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginDto login)
+        {
+            return await _accountService.Login(login);
+        }
+
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IResponseDto> Register(RegisterDto registerDto)
         {

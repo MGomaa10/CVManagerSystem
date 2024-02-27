@@ -4,9 +4,12 @@ using CVManagerSystem.Data.DataContext;
 using CVManagerSystem.Data.DataContext.DbIdentity;
 using CVManagerSystem.Services.Implementations;
 using CVManagerSystem.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,20 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDataContext>((option) =>
 {
-    option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("WebApplication4Context"));
+    option.UseSqlServer(builder.Configuration.GetConnectionString("WebApplication4Context"));
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
 });
 
 builder.Services.AddDefaultIdentity<ApplicationUser>()
@@ -70,6 +86,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors(x => x.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((host) => true));
 
 app.MapControllers();
 
