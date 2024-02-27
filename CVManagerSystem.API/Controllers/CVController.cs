@@ -2,13 +2,17 @@
 using CVManagerSystem.Core.Dtos;
 using CVManagerSystem.Data.DataContext.DbModels;
 using CVManagerSystem.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace CVManagerSystem.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class CVController : BaseController
     {
         private readonly ICVServices _cvServices;
