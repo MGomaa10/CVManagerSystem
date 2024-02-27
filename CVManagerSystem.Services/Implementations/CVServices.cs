@@ -16,6 +16,8 @@ using Mapster;
 using CVManagerSystem.Core.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace CVManagerSystem.Services.Implementations
 {
@@ -25,18 +27,24 @@ namespace CVManagerSystem.Services.Implementations
         private readonly AppDataContext _context;
         private readonly IResponseDto _response;
         private readonly ILogger<CVServices> _logger;
-        public CVServices(AppDataContext context, IResponseDto response, ILogger<CVServices> logger)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public CVServices(AppDataContext context, IResponseDto response, ILogger<CVServices> logger, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _response = response;
             _logger = logger;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
+
         public async Task<IResponseDto> AddCVAsync(CVDto options)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 var cv = options.Adapt<CV>();
+                cv.CreatedBy = Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                 _response.IsSuccessed = true;
                 var personalInformationId = await AddPersonalInformationAsync(options);
                 var experienceInformationId = await AddExperienceInformationAsync(options);

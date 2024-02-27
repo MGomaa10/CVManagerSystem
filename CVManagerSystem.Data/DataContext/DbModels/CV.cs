@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CVManagerSystem.Core.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CVManagerSystem.Data.DataContext.DbModels
 {
-    public class CV
+    public class CV: BaseEntity
     {
         [Key]
         public int ID { get; set; }

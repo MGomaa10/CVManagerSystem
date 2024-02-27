@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDataContext>((option) =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("WebApplication4Context"));
+    option.UseSqlServer(builder.Configuration.GetConnectionString("CVManageSystemContext"));
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
@@ -56,6 +56,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     // Lockout settings
     // options.Lockout.MaxFailedAccessAttempts = config.MaxFailedAccessAttempts;
     options.Lockout.AllowedForNewUsers = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(10);
 
     // User settings
     options.User.RequireUniqueEmail = true;
@@ -64,9 +65,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 
-builder.Services.AddScoped<IIdentityServices, IdentityService>();
 builder.Services.AddScoped<ICVServices, CVServices>();
 builder.Services.AddScoped<IResponseDto, ResponseDto>();
+builder.Services.AddScoped<IIdentityServices, IdentityService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("CORSPolicy", builder => builder.AllowAnyMethod().AllowAnyHeader().AllowCredentials().SetIsOriginAllowed((hosts) => true));

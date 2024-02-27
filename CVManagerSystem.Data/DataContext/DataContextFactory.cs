@@ -19,7 +19,7 @@ namespace CVManagerSystem.Data.DataContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(GetStrigConnection.GetString("WebApplication4Context"), b => b.MigrationsAssembly("CVManagerSystem.Data"));
+            optionsBuilder.UseSqlServer(GetStrigConnection.GetString("CVManageSystemContext"), b => b.MigrationsAssembly("CVManagerSystem.Data"));
         }
     }
 }

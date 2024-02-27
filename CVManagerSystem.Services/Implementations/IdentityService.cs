@@ -80,7 +80,9 @@ namespace CVManagerSystem.Services.Implementations
                 Email = request.Email,
                 LockoutEnabled = false,
                 Address = request.Address,
-                Country = request.Country
+                Country = request.Country,
+                FirstName = request.FirstName,
+                LastName = request.LastName
             };
             var result = await _userManager.CreateAsync(applicationUser, request.Password);
 
